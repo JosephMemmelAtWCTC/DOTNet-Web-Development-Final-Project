@@ -1,0 +1,33 @@
+@model IEnumerable<Discount>
+<br>
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Current Discounts</li>
+  </ol>
+</nav>
+<ul class="list-group">
+
+  @foreach (Discount d in Model)
+  {
+    <div class="list-group-item list-group-item-action">
+      <div class="d-flex w-100 justify-content-between">
+        <h5 class="mb-1">@d.Title</h5>
+        <small>@(float.Parse((d.DiscountPercent * 100).ToString()))% off!</small>
+      </div>
+      <p class="mb-1 ms-3">@d.Description</p>
+      <div class="d-flex w-100 justify-content-between position-relative">
+        <small class="mt-2">@((d.EndTime - DateTime.Today).Days) days left</small>
+        <p>Code: @d.Code</p>
+      </div>
+    </div>
+  }
+  </div>
+</ul>
+<br>
+<script>
+  function getTimeLeft(date) {
+    return DateTime.Today;
+  }
+  @* @DateTime.Today - @d.EndTime *@
+</script>
