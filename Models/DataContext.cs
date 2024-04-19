@@ -15,6 +15,11 @@ public class DataContext : DbContext
     Customers.Add(customer);
     SaveChanges();
   }
+  public void AddReview(Review review)
+  {
+    Reviews.Add(review);
+    SaveChanges();
+  }
 
   public void EditCustomer(Customer customer)
   {

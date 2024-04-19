@@ -1,0 +1,31 @@
+@model Review
+@* <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+    <li class="breadcrumb-item"><a asp-controller="Customer" asp-action="Customers">Customers</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Register</li>
+  </ol>
+</nav> *@
+
+<h4>Review</h4>
+<form method="post" class="row g-3">
+  <div asp-validation-summary="All"></div>
+
+    <div class="col-md-12">
+      <label asp-for="@Model.Rating" class="form-label">Rating</label>
+      <input asp-for="@Model.Rating" type="number" min="0" max="5" class="form-control" placeholder="Rating" id="inputRating"/>
+      <div class="form-text">*Required</div>
+    </div>
+
+    <div class="col-12 form-floating">
+        <label asp-for="@Model.Comment" class="form-label">Comment</label>
+        <textarea asp-for="@Model.Comment" type="text" class="form-control" id="inputAddress" placeholder="Leave a comment here" style="height: 100px">
+        </textarea>
+    </div>
+
+    <div class="col-12">
+      <button type="submit" class="btn btn-primary">Leave Review</button>
+    </div>
+</form>
+
+<hr />
