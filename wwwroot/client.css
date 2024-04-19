@@ -77,3 +77,16 @@ body {
     opacity: .5;
     text-decoration: line-through;
 }
+
+/* Ratings
+-------------------------------------------------- */
+#rating-stars-input > .star{
+    color: var(--bs-secondary);
+}
+#rating-stars-input > .star:hover{
+    color: var(--bs-primary);
+}
+#rating-stars-input > .star.star-number-lower{
+    /* color: var(--bs-tertiary); */
+    color: red;
+}
