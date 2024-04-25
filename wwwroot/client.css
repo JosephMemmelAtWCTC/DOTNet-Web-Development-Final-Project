@@ -77,6 +77,10 @@ body {
     opacity: .5;
     text-decoration: line-through;
 }
+#product_rows tr {
+    cursor: pointer;
+}
+
 
 /* Ratings
 -------------------------------------------------- */
@@ -89,4 +93,7 @@ body {
 #rating-stars-input > .star.star-number-lower{
     /* color: var(--bs-tertiary); */
     color: red;
+}
+#rating-stars-input > .bi-star-fill{
+    color: var(--bs-green);
 }

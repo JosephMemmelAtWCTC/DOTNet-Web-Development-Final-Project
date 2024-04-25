@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 
+
 namespace Northwind.Controllers
 {
     public class APIController(DataContext db) : Controller
@@ -19,6 +20,13 @@ namespace Northwind.Controllers
         // .Include("Category")
         public Product Get(int id) => _dataContext.Products.FirstOrDefault(p => p.ProductId == id);
 
+        [HttpGet, Route("api/productWithRating/{id}")]
+        // returns specific product
+        // public Product GetProductWithRating(int id) => _dataContext.Products.Include("Category").FirstOrDefault(p => p.ProductId == id);
+        public Product GetProductWithRating(int id) => _dataContext.Products.Include("Category").FirstOrDefault(p => p.ProductId == id);
+        // public ActionResult Index() => View(_dataContext.Discounts.Include("Product").Where(d => d.StartTime <= DateTime.Now && d.EndTime > DateTime.Now).Take(3));
+
+
         [HttpGet, Route("api/product/discontinued/{discontinued}")]
         // returns all products where discontinued = true/false
         public IEnumerable<Product> GetDiscontinued(bool discontinued) => _dataContext.Products.Where(p => p.Discontinued == discontinued).OrderBy(p => p.ProductName);
@@ -30,5 +38,13 @@ namespace Northwind.Controllers
         [HttpGet, Route("api/category/{CategoryId}/product/discontinued/{discontinued}")]
         // returns all products in a specific category where discontinued = true/false
         public IEnumerable<Product> GetByCategoryDiscontinued(int CategoryId, bool discontinued) => _dataContext.Products.Where(p => p.CategoryId == CategoryId && p.Discontinued == discontinued).OrderBy(p => p.ProductName);
+
+        [HttpGet, Route("api/category")]
+        // returns all categories
+        public IEnumerable<Category> GetCategory() => _dataContext.Categories.Include("Products").OrderBy(c => c.CategoryName);
+
+        [HttpPost, Route("api/addtocart")]
+        // adds a row to the cartitem table
+        public CartItem Post([FromBody] CartItemJSON cartItem) => _dataContext.AddToCart(cartItem);
     }
 }

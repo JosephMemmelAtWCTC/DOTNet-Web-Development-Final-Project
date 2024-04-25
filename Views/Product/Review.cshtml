@@ -12,19 +12,18 @@
   <div asp-validation-summary="All"></div>
 
     <div class="col-md-12">
+        <p>Rating number input is here for debugging to see the saved value. It is still needed but will be hidden for the final </p>
       <label asp-for="@Model.Rating" class="form-label">Rating</label>
-      <input asp-for="@Model.Rating" id="rating-input" type="number" value="0" min="1" max="5" class="form-control" placeholder="Rating" id="inputRating"/>
-      <div id="rating-stars-input">
-        @* <div class="before-causing-problems-workaround"> *@
-        <i data-star-number="1" class="bi star bi-star"></i>
-        @* </div> *@
-        @* star-# should be the first class in accorance with the js to speed up selection*@
-        <i data-star-number="2" class="bi star bi-star"></i>
-        <i data-star-number="3" class="bi star bi-star"></i>
-        <i data-star-number="4" class="bi star bi-star"></i>
-        <i data-star-number="5" class="bi star bi-star"></i>
+      <input asp-for="@Model.Rating" id="rating-input" type="number" value="0" min="1" max="5" step="1" class="form-control" placeholder="Rating" id="inputRating"/>
+      <span id="rating-stars-input">
+            <i data-star-number="1" class="bi star bi-star"></i>
+            <i data-star-number="2" class="bi star bi-star"></i>
+            <i data-star-number="3" class="bi star bi-star"></i>
+            <i data-star-number="4" class="bi star bi-star"></i>
+            <i data-star-number="5" class="bi star bi-star"></i>
+        </span>
         <span>(<span id="rating-show-number">#</span>)</span>
-      </div>
+
       <div class="form-text">*Required</div>
     </div>
 
