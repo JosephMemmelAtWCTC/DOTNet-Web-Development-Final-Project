@@ -7,7 +7,7 @@ public class Review
     public int ReviewId { get; set; }
     public DateTime ReviewAt { get; set; }
 
-    [Range(0, 5, ErrorMessage = "Value for {0} must be between {1} and {2}.")] // Limit to 0-5 for stars
+    [Range(1, 5, ErrorMessage = "Value for {0} must be between {1} and {2}.")] // Limit to 1-5 for stars
     public byte Rating { get; set; } // unsigned 8-bit range is (0-255)
 
     public String Comment { get; set; }

@@ -23,7 +23,8 @@ namespace Northwind.Controllers
         [HttpGet, Route("api/productWithRating/{id}")]
         // returns specific product
         // public Product GetProductWithRating(int id) => _dataContext.Products.Include("Category").FirstOrDefault(p => p.ProductId == id);
-        public Product GetProductWithRating(int id) => _dataContext.Products.Include("Category").FirstOrDefault(p => p.ProductId == id);
+        // TODO: Not yet set up
+        public Product GetProductWithRating(int id) => _dataContext.Products.Include("Reviews").FirstOrDefault(p => p.ProductId == id);
         // public ActionResult Index() => View(_dataContext.Discounts.Include("Product").Where(d => d.StartTime <= DateTime.Now && d.EndTime > DateTime.Now).Take(3));
 
 
@@ -46,5 +47,11 @@ namespace Northwind.Controllers
         [HttpPost, Route("api/addtocart")]
         // adds a row to the cartitem table
         public CartItem Post([FromBody] CartItemJSON cartItem) => _dataContext.AddToCart(cartItem);
+
+
+        // Get all reviews related to the product
+        [HttpGet, Route("api/product/reviews/{ProductId}")]
+        public IEnumerable<Review> GetReviewsByProduct(int ProductId) => _dataContext.Reviews.Where(r => r.ProductId == ProductId);
+        //  _dataContext.Products.FirstOrDefault(p => p.ProductId == id);
     }
 }

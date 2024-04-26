@@ -54,7 +54,16 @@ document.addEventListener("DOMContentLoaded", function() {
           <td>${product.productName}</td>
           <td class="text-end">${product.unitPrice.toFixed(2)}</td>
           <td class="text-end">${product.unitsInStock}</td>
+          <!--<td class="text-start">${product.rating}</td>-->
         </tr>`;
+        // <td class="text-start">
+        // Visuals only
+        //   <i class="bi star bi-star-fill"></i>
+        //   <i class="bi star bi-star-fill"></i>
+        //   <i class="bi star bi-star-fill"></i>
+        //   <i class="bi star bi-star"></i>
+        //   <i class="bi star bi-star"></i>
+        // </td>
     });
     document.getElementById('product_rows').innerHTML = product_rows;
   }
