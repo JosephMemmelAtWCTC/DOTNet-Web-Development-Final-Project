@@ -47,15 +47,56 @@ document.addEventListener("DOMContentLoaded", function() {
     const { data: fetchedProducts } = await axios.get(`../../api/category/${id}/product${discontinued}`);
     // console.log(fetchedProducts);
     let product_rows = "";
+    // console.log("fetchedProducts", fetchedProducts);
     fetchedProducts.map(product => {
       const css = product.discontinued ? " discontinued" : "";
+      // product_rows += 
+      //   `<tr class="product${css}" data-id="${product.productId}" data-name="${product.productName}" data-price="${product.unitPrice}">
+      //     <td>${product.productName}</td>
+      //     <td class="text-end">${product.unitPrice.toFixed(2)}</td>
+      //     <td class="text-end">${product.unitsInStock}</td>
+      //     <!--<td class="text-start">${product.rating}</td>-->
+      //   </tr>`;
+      //   // <td class="text-start">
+      //   // Visuals only
+      //   //   <i class="bi star bi-star-fill"></i>
+      //   //   <i class="bi star bi-star-fill"></i>
+      //   //   <i class="bi star bi-star-fill"></i>
+      //   //   <i class="bi star bi-star"></i>
+      //   //   <i class="bi star bi-star"></i>
+      //   // </td>
+      // console.log("EEE", product.productName);
       product_rows += 
-        `<tr class="product${css}" data-id="${product.productId}" data-name="${product.productName}" data-price="${product.unitPrice}">
-          <td>${product.productName}</td>
-          <td class="text-end">${product.unitPrice.toFixed(2)}</td>
-          <td class="text-end">${product.unitsInStock}</td>
-          <!--<td class="text-start">${product.rating}</td>-->
-        </tr>`;
+        `
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion_product_${product.productId}" aria-expanded="true" aria-controls="collapseOne">
+            <table
+              <tr class="product${css}" data-id="${product.productId}" data-name="${product.productName}" data-price="${product.unitPrice}">
+                <td>${product.productName}</td>
+                <td class="text-end">${product.unitPrice.toFixed(2)}</td>
+                <td class="text-end">${product.unitsInStock}</td>
+                <!--<td class="text-start">${product.rating}</td>-->
+              </tr>
+            </table>
+            </button>
+          </h2>
+          <div id="accordion_product_${product.productId}" class="accordion-collapse collapse" >
+            <div class="accordion-body">
+              <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+            </div>
+          </div>
+        </div>
+        `;
+
+        // `
+        // <tr class="product${css}" data-id="${product.productId}" data-name="${product.productName}" data-price="${product.unitPrice}">
+        //   <td>${product.productName}</td>
+        //   <td class="text-end">${product.unitPrice.toFixed(2)}</td>
+        //   <td class="text-end">${product.unitsInStock}</td>
+        //   <!--<td class="text-start">${product.rating}</td>-->
+        // </tr>`;
+
         // <td class="text-start">
         // Visuals only
         //   <i class="bi star bi-star-fill"></i>

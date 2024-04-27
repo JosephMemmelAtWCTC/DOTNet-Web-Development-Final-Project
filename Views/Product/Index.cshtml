@@ -23,8 +23,12 @@
       <th scope="col" class="text-end">Rating</th>
     </tr>
 </thead>
-<tbody id="product_rows" data-id="@ViewBag.id">
-</tbody>
+@* <tbody id="product_rows" data-id="@ViewBag.id">
+</tbody> *@
+
+<div class="accordion" id="product_rows" data-id="@ViewBag.id">
+</div>
+
 </table>
 
 
@@ -58,7 +62,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" id="addToCart">Contune</button>
+        <button type="button" class="btn btn-primary" id="addToCart">Continue</button>
       </div>
     </div>
   </div>
