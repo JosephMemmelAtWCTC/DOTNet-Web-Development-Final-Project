@@ -4,31 +4,36 @@
   <thead>
     <tr>
       <th scope="col">
-        <div class="input-group">
-          <select class="form-select" id="CategoryId">
-          @foreach (Category c in Model)
-          {
-            if (c.CategoryId == ViewBag.id)
-              { <option value="@c.CategoryId" selected>@c.CategoryName</option> }
-            else
-              { <option value="@c.CategoryId">@c.CategoryName</option> }
-          }
-          </select>
-          <input class="form-check-input ms-2 mt-2" type="checkbox" id="Discontinued">
-          <label class="form-check-label ms-2 mt-1" for="Discontinued">Discontinued</label>
+        <div class="row">
+          <div class="col-6">
+            <div class="input-group">
+              <select class="form-select" id="CategoryId">
+                @foreach (Category c in Model)
+                {
+                  if (c.CategoryId == ViewBag.id)
+                    { <option value="@c.CategoryId" selected>@c.CategoryName</option> }
+                  else
+                    { <option value="@c.CategoryId">@c.CategoryName</option> }
+                }
+              </select>
+              <input class="form-check-input ms-2 mt-2" type="checkbox" id="Discontinued">
+              <label class="form-check-label ms-2 mt-1" for="Discontinued">Discontinued</label>
+            </div>
+          </div>
+          <div class="col-6 row row-cols-3">
+            <p class="col text-end">Price ($)</p>
+            <p class="col text-end">Stock</p>
+            <p class="col text-end">Rating</p>
+          </div>
         </div>
       </th>
-      <th scope="col" class="text-end">Price ($)</th>
-      <th scope="col" class="text-end">Stock</th>
-      <th scope="col" class="text-end">Rating</th>
     </tr>
-</thead>
+  </thead>
+  <tbody class="accordion" id="product_rows" data-id="@ViewBag.id">
+    @* <div ></div> *@
+  </tbody>
 @* <tbody id="product_rows" data-id="@ViewBag.id">
 </tbody> *@
-
-<div class="accordion" id="product_rows" data-id="@ViewBag.id">
-</div>
-
 </table>
 
 

@@ -46,47 +46,49 @@ document.addEventListener("DOMContentLoaded", function() {
     const discontinued = document.getElementById('Discontinued').checked ? "" : "/discontinued/false";
     const { data: fetchedProducts } = await axios.get(`../../api/category/${id}/product${discontinued}`);
     // console.log(fetchedProducts);
-    let product_rows = "";
+    let product_row = "";
     // console.log("fetchedProducts", fetchedProducts);
+    document.getElementById('product_rows').innerHTML = "";
     fetchedProducts.map(product => {
       const css = product.discontinued ? " discontinued" : "";
-      // product_rows += 
-      //   `<tr class="product${css}" data-id="${product.productId}" data-name="${product.productName}" data-price="${product.unitPrice}">
-      //     <td>${product.productName}</td>
-      //     <td class="text-end">${product.unitPrice.toFixed(2)}</td>
-      //     <td class="text-end">${product.unitsInStock}</td>
-      //     <!--<td class="text-start">${product.rating}</td>-->
-      //   </tr>`;
-      //   // <td class="text-start">
-      //   // Visuals only
-      //   //   <i class="bi star bi-star-fill"></i>
-      //   //   <i class="bi star bi-star-fill"></i>
-      //   //   <i class="bi star bi-star-fill"></i>
-      //   //   <i class="bi star bi-star"></i>
-      //   //   <i class="bi star bi-star"></i>
-      //   // </td>
-      // console.log("EEE", product.productName);
-      product_rows += 
+
+      // TODO: Add paganation and wait for everything else to load before loading reviews
+
+      product_row = 
         `
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion_product_${product.productId}" aria-expanded="true" aria-controls="collapseOne">
-            <table
-              <tr class="product${css}" data-id="${product.productId}" data-name="${product.productName}" data-price="${product.unitPrice}">
-                <td>${product.productName}</td>
-                <td class="text-end">${product.unitPrice.toFixed(2)}</td>
-                <td class="text-end">${product.unitsInStock}</td>
-                <!--<td class="text-start">${product.rating}</td>-->
-              </tr>
-            </table>
-            </button>
-          </h2>
-          <div id="accordion_product_${product.productId}" class="accordion-collapse collapse" >
-            <div class="accordion-body">
-              <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+        <tr>
+          <td class="w-100">
+            <div class="accordion-item" onclick="loadReviewsForProduct(${product.productId})">
+              <h2 class="accordion-header">
+                <table class="w-100">
+                  <tr class="product${css} w-100 accordion-button collapsed"
+                      data-id="${product.productId}"
+                      data-name="${product.productName}"
+                      data-price="${product.unitPrice}""
+                      data-bs-toggle="collapse"
+                      data-bs-target="#accordion_product_${product.productId}"
+                      aria-expanded="true"
+                      aria-controls="collapse_${product.productId}">
+                    <div class="row">
+                      <td class="test-start col-6">${product.productName}</td>
+                      <td class="text-end col-2">${product.unitPrice.toFixed(2)}</td>
+                      <td class="text-end col-2">${product.unitsInStock}</td>
+                      <td class="text-end col-2">${product.rating}</td>
+                    </div>
+                  </tr>
+                </table>
+              </h2>
+              <div id="accordion_product_${product.productId}" class="accordion-collapse collapse" >
+                <div class="accordion-body">
+                  <h3>Reviews for ${product.productName}</h3>
+                  <div class="reviews list-group">
+                  </div>
+                  <!--<strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.-->
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          </td>
+        </tr>
         `;
 
         // `
@@ -105,8 +107,10 @@ document.addEventListener("DOMContentLoaded", function() {
         //   <i class="bi star bi-star"></i>
         //   <i class="bi star bi-star"></i>
         // </td>
+
+        // Add to page right away as api calls are used in getting the reviews - don't delay
+        document.getElementById('product_rows').innerHTML += product_row;
     });
-    document.getElementById('product_rows').innerHTML = product_rows;
   }
   document.getElementById('addToCart').addEventListener("click", (e) => {
     // hide modal
@@ -119,8 +123,42 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     postCartItem(item);
   });
-    async function postCartItem(item) {
+  async function postCartItem(item) {
     axios.post('../../api/addtocart', item).then(res => {
       toast("Product Added", `${res.data.product.productName} successfully added to cart.`);
     });
-}
+  }
+
+  async function loadReviewsForProduct(productId){
+    console.log("loadReviewsForProduct", productId);
+    const reviewsArea = document.querySelector("#accordion_product_"+productId+" .reviews");
+    if(reviewsArea.children.length === 0){
+      console.log("Reviews not already loaded, retrieving reviews.");
+      const { data: fetchedReviews } = await axios.get(`../../api/product/reviews/${productId}`);
+      fetchedReviews.map(review => {
+        console.log("Review", review);
+
+        let ratingsDisplay = "";
+        let starNum = 0;
+        for(; starNum<review.rating; starNum++){
+          ratingsDisplay += `<i class="bi bi-star-fill"></i>`;
+        };
+        for(; starNum<5; starNum++){
+          ratingsDisplay += `<i class="bi bi-star"></i>`;
+        };
+        reviewsArea.innerHTML += `
+          <div href="#" class="list-group-item list-group-item-action">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">[TODO: Name]</h5>
+              <small class="text-body-secondary">${ratingsDisplay}</small>
+            </div>
+            <p class="mb-1 ms-3">${review.comment}.</p>
+            <small class="text-body-secondary">${review.reviewAt}</small>
+          </a>
+        `;
+      });
+
+    }else{
+      console.log("Reviews already exist");
+    }
+  }
