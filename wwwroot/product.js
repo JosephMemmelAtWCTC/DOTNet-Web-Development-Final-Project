@@ -9,23 +9,43 @@ document.addEventListener("DOMContentLoaded", function() {
     fetchProducts();
   });
   // delegated event listener
-  document.getElementById('product_rows').addEventListener("click", (e) => {
-    p = e.target.parentElement;
-    if (p.classList.contains('product')) {
-      e.preventDefault()
-      // console.log(p.dataset['id']);
-      if (document.getElementById('User').dataset['customer'].toLowerCase() == "true") {
-        document.getElementById('ProductId').innerHTML = p.dataset['id'];
-        document.getElementById('ProductName').innerHTML = p.dataset['name'];
-        document.getElementById('UnitPrice').innerHTML = Number(p.dataset['price']).toFixed(2);
-        display_total();
-        const cart = new bootstrap.Modal('#cartModal', {}).show();
-      } else {
-        // alert("Only signed in customers can add items to the cart");
-        toast("Access Denied", "You must be signed in as a customer to access the cart.");
-      }
+  // const allAddToCarts = document.querySelectorAll('#product_rows button.add-to-cart');
+  // allAddToCarts.forEach(addToCart => {
+  //   addToCart.addEventListener("click", (e) => {
+  //     console.log("p.dataset['id']----");
+
+  //     p = e.target.parentElement.parentElement;
+  //     if (p.classList.contains('product')) {
+  //       console.log("p.dataset['id']");
+  //       e.preventDefault()
+  //       // console.log(p.dataset['id']);
+        // if (document.getElementById('User').dataset['customer'].toLowerCase() == "true") {
+        //   document.getElementById('ProductId').innerHTML = p.dataset['id'];
+        //   document.getElementById('ProductName').innerHTML = p.dataset['name'];
+        //   document.getElementById('UnitPrice').innerHTML = Number(p.dataset['price']).toFixed(2);
+        //   display_total();
+        //   const cart = new bootstrap.Modal('#cartModal', {}).show();
+        // } else {
+        //   // alert("Only signed in customers can add items to the cart");
+        //   toast("Access Denied", "You must be signed in as a customer to access the cart.");
+        // }
+  //     }
+  //   });
+  // });
+  function addToCartPullUpModal(productId, productName, unitPrice, unitsInStock, rating){
+    console.log("addToCartPullUpModal");
+     if (document.getElementById('User').dataset['customer'].toLowerCase() == "true") {
+      document.getElementById('ProductId').innerHTML = productId;
+      document.getElementById('ProductName').innerHTML = productName;
+      document.getElementById('UnitPrice').innerHTML = Number(unitPrice).toFixed(2);
+      display_total();
+      const cart = new bootstrap.Modal('#cartModal', {}).show();
+    } else {
+      // alert("Only signed in customers can add items to the cart");
+      toast("Access Denied", "You must be signed in as a customer to access the cart.");
     }
-  });
+  }
+  
   const toast = (header, message) => {
     document.getElementById('toast_header').innerHTML = header;
     document.getElementById('toast_body').innerHTML = message;
@@ -64,16 +84,21 @@ document.addEventListener("DOMContentLoaded", function() {
                   <tr class="product${css} w-100 accordion-button collapsed"
                       data-id="${product.productId}"
                       data-name="${product.productName}"
-                      data-price="${product.unitPrice}""
+                      data-price="${product.unitPrice}"
                       data-bs-toggle="collapse"
                       data-bs-target="#accordion_product_${product.productId}"
                       aria-expanded="true"
                       aria-controls="collapse_${product.productId}">
-                    <div class="row">
+                    <div class="row row-cols-4">
                       <td class="test-start col-6">${product.productName}</td>
-                      <td class="text-end col-2">${product.unitPrice.toFixed(2)}</td>
-                      <td class="text-end col-2">${product.unitsInStock}</td>
-                      <td class="text-end col-2">${product.rating}</td>
+                      <td class="text-end">${product.unitPrice.toFixed(2)}</td>
+                      <td class="text-end">${product.unitsInStock}</td>
+                      <td class="text-end">${product.rating}</td>
+                      <td class="text-end">
+                        <button class="add-to-cart" onclick="addToCartPullUpModal('${product.productId}','${product.productName}','${product.unitPrice}','${product.unitsInStock}','${product.rating}')">
+                          <i class="bi bi-cart-plus"></i>
+                        </button>
+                      </td>
                     </div>
                   </tr>
                 </table>
@@ -113,6 +138,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
   document.getElementById('addToCart').addEventListener("click", (e) => {
+
     // hide modal
     const cart = bootstrap.Modal.getInstance(document.getElementById('cartModal')).hide();
     // use axios post to add item to cart
@@ -149,7 +175,7 @@ document.addEventListener("DOMContentLoaded", function() {
         reviewsArea.innerHTML += `
           <div href="#" class="list-group-item list-group-item-action">
             <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1">[TODO: Name]</h5>
+              <h5 class="mb-1">${review.customer.companyName}</h5>
               <small class="text-body-secondary">${ratingsDisplay}</small>
             </div>
             <p class="mb-1 ms-3">${review.comment}.</p>

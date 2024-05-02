@@ -17,7 +17,6 @@ namespace Northwind.Controllers
         [HttpGet, Route("api/product/{id}")]
         // returns specific product
 
-        // .Include("Category")
         public Product Get(int id) => _dataContext.Products.FirstOrDefault(p => p.ProductId == id);
 
         [HttpGet, Route("api/productWithRating/{id}")]
@@ -51,7 +50,7 @@ namespace Northwind.Controllers
 
         // Get all reviews related to the product
         [HttpGet, Route("api/product/reviews/{ProductId}")]
-        public IEnumerable<Review> GetReviewsByProduct(int ProductId) => _dataContext.Reviews.Where(r => r.ProductId == ProductId);
+        public IEnumerable<Review> GetReviewsByProduct(int ProductId) => _dataContext.Reviews.Include(r => r.Product).Include(r => r.Customer).Where(r => r.ProductId == ProductId);
         //  _dataContext.Products.FirstOrDefault(p => p.ProductId == id);
     }
 }
