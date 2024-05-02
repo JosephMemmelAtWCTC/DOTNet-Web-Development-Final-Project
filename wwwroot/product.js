@@ -91,10 +91,10 @@ document.addEventListener("DOMContentLoaded", function() {
                       aria-controls="collapse_${product.productId}">
                     <div class="row row-cols-4">
                       <td class="test-start col-6">${product.productName}</td>
-                      <td class="text-end">${product.unitPrice.toFixed(2)}</td>
-                      <td class="text-end">${product.unitsInStock}</td>
-                      <td class="text-end">${product.rating}</td>
-                      <td class="text-end">
+                      <td class="text-end col">${product.unitPrice.toFixed(2)}</td>
+                      <td class="text-end col">${product.unitsInStock}</td>
+                      <td class="text-end col">${product.rating}</td>
+                      <td class="text-end col">
                         <button class="add-to-cart" onclick="addToCartPullUpModal('${product.productId}','${product.productName}','${product.unitPrice}','${product.unitsInStock}','${product.rating}')">
                           <i class="bi bi-cart-plus"></i>
                         </button>
