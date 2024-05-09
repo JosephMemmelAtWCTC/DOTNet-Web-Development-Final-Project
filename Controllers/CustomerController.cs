@@ -86,7 +86,7 @@ public class CustomerController(DataContext db, UserManager<AppUser> usrMgr) : C
     // ;
     public IActionResult Purchases()
     {
-        var customerWithOrdersAndOrderDetails = new CustomerWithOrdersAndOrderDetails
+        var customerWithOrdersAndOrderDetails = new CustomerOrdersAndOrderDetails
         {
             Customer = _dataContext.Customers.FirstOrDefault(c => c.Email == User.Identity.Name),
             Orders = _dataContext.Orders

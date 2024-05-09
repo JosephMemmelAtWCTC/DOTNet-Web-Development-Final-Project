@@ -11,7 +11,7 @@ public class DataContext : DbContext
   public DbSet<Review> Reviews { get; set; }
   public DbSet<CartItem> CartItems { get; set; }
   public DbSet<Order> Orders { get; set; }
-  public DbSet<OrderDetail> OrderDetails { get; set; }
+  public DbSet<OrderDetails> OrderDetails { get; set; }
 
   public void AddCustomer(Customer customer)
   {
