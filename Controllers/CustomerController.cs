@@ -91,7 +91,8 @@ public class CustomerController(DataContext db, UserManager<AppUser> usrMgr) : C
             Customer = _dataContext.Customers.FirstOrDefault(c => c.Email == User.Identity.Name),
             Orders = _dataContext.Orders
                 .Where(o => o.Customer.Email == User.Identity.Name)
-                // .Include(o => o.OrderDetail)
+                .Include(o => o.OrderDetails)
+                .ThenInclude(od => od.Product)
                 .ToList()
         };
 
