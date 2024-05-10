@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     fetchProducts();
-  });
+
   document.getElementById("CategoryId").addEventListener("change", (e) => {
     document.getElementById('product_rows').dataset['id'] = e.target.value;
     fetchProducts();
@@ -8,6 +8,8 @@ document.addEventListener("DOMContentLoaded", function() {
   document.getElementById('Discontinued').addEventListener("change", (e) => {
     fetchProducts();
   });
+});
+
   // delegated event listener
   // const allAddToCarts = document.querySelectorAll('#product_rows button.add-to-cart');
   // allAddToCarts.forEach(addToCart => {
@@ -45,6 +47,8 @@ document.addEventListener("DOMContentLoaded", function() {
       toast("Access Denied", "You must be signed in as a customer to access the cart.");
     }
   }
+
+  
   
   const toast = (header, message) => {
     document.getElementById('toast_header').innerHTML = header;
@@ -78,7 +82,7 @@ document.addEventListener("DOMContentLoaded", function() {
         `
         <tr>
           <td class="w-100">
-            <div class="accordion-item" onclick="loadReviewsForProduct(${product.productId})">
+            <div class="accordion-item" onclick="loadReviewsForProduct(event, ${product.productId})">
               <h2 class="accordion-header">
                 <table class="w-100">
                   <tr class="product${css} w-100 accordion-button collapsed"
@@ -136,6 +140,24 @@ document.addEventListener("DOMContentLoaded", function() {
         // Add to page right away as api calls are used in getting the reviews - don't delay
         document.getElementById('product_rows').innerHTML += product_row;
     });
+    const addToCartButtons = document.querySelectorAll('.add-to-cart');
+
+    // https://stackoverflow.com/a/73158030 for prevent it from changing via detect hover
+    addToCartButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+
+      button.addEventListener('mouseenter', (e) => {
+        let accordionButton = button.closest('.accordion-button');
+        accordionButton.removeAttribute('data-bs-toggle');
+      });
+
+      button.addEventListener('mouseleave', (e) => {
+        let accordionButton = button.closest('.accordion-button');
+        accordionButton.setAttribute('data-bs-toggle', 'collapse');
+      });
+    });
   }
   document.getElementById('addToCart').addEventListener("click", (e) => {
 
@@ -155,7 +177,27 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 
-  async function loadReviewsForProduct(productId){
+  function loadReviewsForProduct(event, productId){
+    event.stopPropagation();// Prevent the accordian from changing, does not work, quick undo action instead
+    // console.log("event.target()", event.target);
+    // if(event.target.classList.contains("bi-cart-plus")){
+    //   // const targetAccordion = event.target.closest(".accordion-collapse");
+    //   const targetAccordian = event.target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector(".accordion-collapse");//Looking for (".accordion-collapse")
+    //   console.log("targetAccordian", targetAccordian);
+    //   if(targetAccordian.classList.contains("show")){
+    //     targetAccordian.classList.remove("show");
+    //   }else{
+    //     targetAccordian.classList.add("show");
+    //   }
+    // }
+
+    loadReviews(productId);
+  }
+
+
+
+
+  async function loadReviews(productId){
     console.log("loadReviewsForProduct", productId);
     const reviewsArea = document.querySelector("#accordion_product_"+productId+" .reviews");
     if(reviewsArea.children.length === 0){
