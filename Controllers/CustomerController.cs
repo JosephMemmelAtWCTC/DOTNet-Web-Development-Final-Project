@@ -93,7 +93,8 @@ public class CustomerController(DataContext db, UserManager<AppUser> usrMgr) : C
                 .Where(o => o.Customer.Email == User.Identity.Name)
                 .Include(o => o.OrderDetails)
                 .ThenInclude(od => od.Product)
-                .ToList()
+                .ToList(),
+            LeftReviews = _dataContext.Reviews.Where(r => r.Customer.Email == User.Identity.Name)
         };
 
         return View(customerWithOrdersAndOrderDetails);
