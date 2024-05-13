@@ -49,11 +49,13 @@ document.addEventListener("DOMContentLoaded", function() {
     let product_rows = "";
     fetchedProducts.map(product => {
       const css = product.discontinued ? " discontinued" : "";
+      const ratingText = review.rating ? `${review.rating.toFixed(1)} stars` : "No ratings yet!";
       product_rows += 
         `<tr class="product${css}" data-id="${product.productId}" data-name="${product.productName}" data-price="${product.unitPrice}">
           <td>${product.productName}</td>
           <td class="text-end">${product.unitPrice.toFixed(2)}</td>
           <td class="text-end">${product.unitsInStock}</td>
+          <td class="text-end">${ratingText}</td>
         </tr>`;
     });
     document.getElementById('product_rows').innerHTML = product_rows;
