@@ -22,10 +22,35 @@ public class ProductController(DataContext db, UserManager<AppUser> usrMgr) : Co
   public IActionResult Discounts() => View(_dataContext.Discounts.Where(d => d.EndTime > DateTime.Today).OrderBy(d => d.EndTime));
 
 
-  public IActionResult Index(int id){
-    ViewBag.id = id;
-    return View(_dataContext.Categories.OrderBy(c => c.CategoryName));
-  }
+  public IActionResult Index(int id)
+    {
+        ViewBag.id = id;
+        var products = _dataContext.Products.Where(p => p.CategoryId == id && !p.Discontinued).ToList();
+
+        var productRatings = _dataContext.Reviews
+            .GroupBy(r => r.ProductId)
+            .Select(g => new
+            {
+                ProductId = g.Key,
+                AverageRating = g.Average(r => r.Rating)
+            }).ToDictionary(x => x.ProductId, x => x.AverageRating);
+
+        foreach (var product in products)
+        {
+            if (productRatings.ContainsKey(product.ProductId))
+            {
+                product.AverageRating = Math.Round(productRatings[product.ProductId], 1);
+            }
+            else
+            {
+                product.AverageRating = null;
+            }
+        }
+
+        ViewBag.Products = products;
+
+        return View(products);
+    }
 
   public IActionResult Review(int id){
     return View(

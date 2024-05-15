@@ -1,5 +1,5 @@
-document.addEventListener("DOMContentLoaded", function() {
-    fetchProducts();
+document.addEventListener("DOMContentLoaded", function () {
+  fetchProducts();
 
   document.getElementById("CategoryId").addEventListener("change", (e) => {
     document.getElementById('product_rows').dataset['id'] = e.target.value;
@@ -10,76 +10,77 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 });
 
-  // delegated event listener
-  // const allAddToCarts = document.querySelectorAll('#product_rows button.add-to-cart');
-  // allAddToCarts.forEach(addToCart => {
-  //   addToCart.addEventListener("click", (e) => {
-  //     console.log("p.dataset['id']----");
+// delegated event listener
+// const allAddToCarts = document.querySelectorAll('#product_rows button.add-to-cart');
+// allAddToCarts.forEach(addToCart => {
+//   addToCart.addEventListener("click", (e) => {
+//     console.log("p.dataset['id']----");
 
-  //     p = e.target.parentElement.parentElement;
-  //     if (p.classList.contains('product')) {
-  //       console.log("p.dataset['id']");
-  //       e.preventDefault()
-  //       // console.log(p.dataset['id']);
-        // if (document.getElementById('User').dataset['customer'].toLowerCase() == "true") {
-        //   document.getElementById('ProductId').innerHTML = p.dataset['id'];
-        //   document.getElementById('ProductName').innerHTML = p.dataset['name'];
-        //   document.getElementById('UnitPrice').innerHTML = Number(p.dataset['price']).toFixed(2);
-        //   display_total();
-        //   const cart = new bootstrap.Modal('#cartModal', {}).show();
-        // } else {
-        //   // alert("Only signed in customers can add items to the cart");
-        //   toast("Access Denied", "You must be signed in as a customer to access the cart.");
-        // }
-  //     }
-  //   });
-  // });
-  function addToCartPullUpModal(productId, productName, unitPrice, unitsInStock, rating){
-    console.log("addToCartPullUpModal");
-     if (document.getElementById('User').dataset['customer'].toLowerCase() == "true") {
-      document.getElementById('ProductId').innerHTML = productId;
-      document.getElementById('ProductName').innerHTML = productName;
-      document.getElementById('UnitPrice').innerHTML = Number(unitPrice).toFixed(2);
-      display_total();
-      const cart = new bootstrap.Modal('#cartModal', {}).show();
-    } else {
-      // alert("Only signed in customers can add items to the cart");
-      toast("Access Denied", "You must be signed in as a customer to access the cart.");
-    }
-  }
-
-  
-  
-  const toast = (header, message) => {
-    document.getElementById('toast_header').innerHTML = header;
-    document.getElementById('toast_body').innerHTML = message;
-    bootstrap.Toast.getOrCreateInstance(document.getElementById('liveToast')).show();
-  }
-  const display_total = () => {
-    const total = parseInt(document.getElementById('Quantity').value) * Number(document.getElementById('UnitPrice').innerHTML);
-    document.getElementById('Total').innerHTML = numberWithCommas(total.toFixed(2));
-  }
-  // update total when cart quantity is changed
-  document.getElementById('Quantity').addEventListener("change", (e) => {
+//     p = e.target.parentElement.parentElement;
+//     if (p.classList.contains('product')) {
+//       console.log("p.dataset['id']");
+//       e.preventDefault()
+//       // console.log(p.dataset['id']);
+// if (document.getElementById('User').dataset['customer'].toLowerCase() == "true") {
+//   document.getElementById('ProductId').innerHTML = p.dataset['id'];
+//   document.getElementById('ProductName').innerHTML = p.dataset['name'];
+//   document.getElementById('UnitPrice').innerHTML = Number(p.dataset['price']).toFixed(2);
+//   display_total();
+//   const cart = new bootstrap.Modal('#cartModal', {}).show();
+// } else {
+//   // alert("Only signed in customers can add items to the cart");
+//   toast("Access Denied", "You must be signed in as a customer to access the cart.");
+// }
+//     }
+//   });
+// });
+function addToCartPullUpModal(productId, productName, unitPrice, unitsInStock, rating) {
+  console.log("addToCartPullUpModal");
+  if (document.getElementById('User').dataset['customer'].toLowerCase() == "true") {
+    document.getElementById('ProductId').innerHTML = productId;
+    document.getElementById('ProductName').innerHTML = productName;
+    document.getElementById('UnitPrice').innerHTML = Number(unitPrice).toFixed(2);
     display_total();
-  });
-  // function to display commas in number
-  const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  async function fetchProducts() {
-    const id = document.getElementById('product_rows').dataset['id'];
-    const discontinued = document.getElementById('Discontinued').checked ? "" : "/discontinued/false";
-    const { data: fetchedProducts } = await axios.get(`../../api/category/${id}/product${discontinued}`);
-    // console.log(fetchedProducts);
-    let product_row = "";
-    // console.log("fetchedProducts", fetchedProducts);
-    document.getElementById('product_rows').innerHTML = "";
-    fetchedProducts.map(product => {
-      const css = product.discontinued ? " discontinued" : "";
+    const cart = new bootstrap.Modal('#cartModal', {}).show();
+  } else {
+    // alert("Only signed in customers can add items to the cart");
+    toast("Access Denied", "You must be signed in as a customer to access the cart.");
+  }
+}
 
-      // TODO: Add paganation and wait for everything else to load before loading reviews
 
-      product_row = 
-        `
+
+const toast = (header, message) => {
+  document.getElementById('toast_header').innerHTML = header;
+  document.getElementById('toast_body').innerHTML = message;
+  bootstrap.Toast.getOrCreateInstance(document.getElementById('liveToast')).show();
+}
+const display_total = () => {
+  const total = parseInt(document.getElementById('Quantity').value) * Number(document.getElementById('UnitPrice').innerHTML);
+  document.getElementById('Total').innerHTML = numberWithCommas(total.toFixed(2));
+}
+// update total when cart quantity is changed
+document.getElementById('Quantity').addEventListener("change", (e) => {
+  display_total();
+});
+// function to display commas in number
+const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+async function fetchProducts() {
+  const id = document.getElementById('product_rows').dataset['id'];
+  const discontinued = document.getElementById('Discontinued').checked ? "" : "/discontinued/false";
+  const { data: fetchedProducts } = await axios.get(`../../api/category/${id}/product${discontinued}`);
+  // console.log(fetchedProducts);
+  let product_row = "";
+  // console.log("fetchedProducts", fetchedProducts);
+  document.getElementById('product_rows').innerHTML = "";
+  fetchedProducts.map(product => {
+    const css = product.discontinued ? " discontinued" : "";
+    const ratingText = product.averageRating ? `${product.averageRating.toFixed(1)} stars` : "No ratings yet!";
+
+    // TODO: Add paganation and wait for everything else to load before loading reviews
+
+    product_row =
+      `
         <tr>
           <td class="w-100">
             <div class="accordion-item" onclick="loadReviewsForProduct(event, ${product.productId})">
@@ -97,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function() {
                       <td class="test-start col-6">${product.productName}</td>
                       <td class="text-end col">${product.unitPrice.toFixed(2)}</td>
                       <td class="text-end col">${product.unitsInStock}</td>
-                      <td class="text-end col">${product.rating}</td>
+                      <td class="text-end col">${ratingText}</td>
                       <td class="text-end col">
                         <button class="add-to-cart" onclick="addToCartPullUpModal('${product.productId}','${product.productName}','${product.unitPrice}','${product.unitsInStock}','${product.rating}')">
                           <i class="bi bi-cart-plus"></i>
@@ -120,101 +121,94 @@ document.addEventListener("DOMContentLoaded", function() {
         </tr>
         `;
 
-        // `
-        // <tr class="product${css}" data-id="${product.productId}" data-name="${product.productName}" data-price="${product.unitPrice}">
-        //   <td>${product.productName}</td>
-        //   <td class="text-end">${product.unitPrice.toFixed(2)}</td>
-        //   <td class="text-end">${product.unitsInStock}</td>
-        //   <!--<td class="text-start">${product.rating}</td>-->
-        // </tr>`;
 
-        // <td class="text-start">
-        // Visuals only
-        //   <i class="bi star bi-star-fill"></i>
-        //   <i class="bi star bi-star-fill"></i>
-        //   <i class="bi star bi-star-fill"></i>
-        //   <i class="bi star bi-star"></i>
-        //   <i class="bi star bi-star"></i>
-        // </td>
+    // <td class="text-start">
+    // Visuals only
+    //   <i class="bi star bi-star-fill"></i>
+    //   <i class="bi star bi-star-fill"></i>
+    //   <i class="bi star bi-star-fill"></i>
+    //   <i class="bi star bi-star"></i>
+    //   <i class="bi star bi-star"></i>
+    // </td>
 
-        // Add to page right away as api calls are used in getting the reviews - don't delay
-        document.getElementById('product_rows').innerHTML += product_row;
-    });
-    const addToCartButtons = document.querySelectorAll('.add-to-cart');
-
-    // https://stackoverflow.com/a/73158030 for prevent it from changing via detect hover
-    addToCartButtons.forEach(button => {
-      button.addEventListener('click', (e) => {
-        e.stopPropagation();
-      });
-
-      button.addEventListener('mouseenter', (e) => {
-        let accordionButton = button.closest('.accordion-button');
-        accordionButton.removeAttribute('data-bs-toggle');
-      });
-
-      button.addEventListener('mouseleave', (e) => {
-        let accordionButton = button.closest('.accordion-button');
-        accordionButton.setAttribute('data-bs-toggle', 'collapse');
-      });
-    });
-  }
-  document.getElementById('addToCart').addEventListener("click", (e) => {
-
-    // hide modal
-    const cart = bootstrap.Modal.getInstance(document.getElementById('cartModal')).hide();
-    // use axios post to add item to cart
-    item = {
-      "id": Number(document.getElementById('ProductId').innerHTML),
-      "email": document.getElementById('User').dataset['email'],
-      "qty": Number(document.getElementById('Quantity').value)
-    }
-    postCartItem(item);
+    // Add to page right away as api calls are used in getting the reviews - don't delay
+    document.getElementById('product_rows').innerHTML += product_row;
   });
-  async function postCartItem(item) {
-    axios.post('../../api/addtocart', item).then(res => {
-      toast("Product Added", `${res.data.product.productName} successfully added to cart.`);
+  const addToCartButtons = document.querySelectorAll('.add-to-cart');
+
+  // https://stackoverflow.com/a/73158030 for prevent it from changing via detect hover
+  addToCartButtons.forEach(button => {
+    button.addEventListener('click', (e) => {
+      e.stopPropagation();
     });
+
+    button.addEventListener('mouseenter', (e) => {
+      let accordionButton = button.closest('.accordion-button');
+      accordionButton.removeAttribute('data-bs-toggle');
+    });
+
+    button.addEventListener('mouseleave', (e) => {
+      let accordionButton = button.closest('.accordion-button');
+      accordionButton.setAttribute('data-bs-toggle', 'collapse');
+    });
+  });
+}
+document.getElementById('addToCart').addEventListener("click", (e) => {
+
+  // hide modal
+  const cart = bootstrap.Modal.getInstance(document.getElementById('cartModal')).hide();
+  // use axios post to add item to cart
+  item = {
+    "id": Number(document.getElementById('ProductId').innerHTML),
+    "email": document.getElementById('User').dataset['email'],
+    "qty": Number(document.getElementById('Quantity').value)
   }
+  postCartItem(item);
+});
+async function postCartItem(item) {
+  axios.post('../../api/addtocart', item).then(res => {
+    toast("Product Added", `${res.data.product.productName} successfully added to cart.`);
+  });
+}
 
-  function loadReviewsForProduct(event, productId){
-    event.stopPropagation();// Prevent the accordian from changing, does not work, quick undo action instead
-    // console.log("event.target()", event.target);
-    // if(event.target.classList.contains("bi-cart-plus")){
-    //   // const targetAccordion = event.target.closest(".accordion-collapse");
-    //   const targetAccordian = event.target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector(".accordion-collapse");//Looking for (".accordion-collapse")
-    //   console.log("targetAccordian", targetAccordian);
-    //   if(targetAccordian.classList.contains("show")){
-    //     targetAccordian.classList.remove("show");
-    //   }else{
-    //     targetAccordian.classList.add("show");
-    //   }
-    // }
+function loadReviewsForProduct(event, productId) {
+  event.stopPropagation();// Prevent the accordian from changing, does not work, quick undo action instead
+  // console.log("event.target()", event.target);
+  // if(event.target.classList.contains("bi-cart-plus")){
+  //   // const targetAccordion = event.target.closest(".accordion-collapse");
+  //   const targetAccordian = event.target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector(".accordion-collapse");//Looking for (".accordion-collapse")
+  //   console.log("targetAccordian", targetAccordian);
+  //   if(targetAccordian.classList.contains("show")){
+  //     targetAccordian.classList.remove("show");
+  //   }else{
+  //     targetAccordian.classList.add("show");
+  //   }
+  // }
 
-    loadReviews(productId);
-  }
-
-
+  loadReviews(productId);
+}
 
 
-  async function loadReviews(productId){
-    console.log("loadReviewsForProduct", productId);
-    const reviewsArea = document.querySelector("#accordion_product_"+productId+" .reviews");
-    if(reviewsArea.children.length === 0){
-      console.log("Reviews not already loaded, retrieving reviews.");
-      const { data: fetchedReviews } = await axios.get(`../../api/product/reviews/${productId}`);
-      fetchedReviews.map(review => {
-        console.log("Review", review);
 
-        let ratingsDisplay = "";
-        let starNum = 0;
-        for(; starNum<review.rating; starNum++){
-          ratingsDisplay += `<i class="bi bi-star-fill"></i>`;
-        };
-        for(; starNum<5; starNum++){
-          ratingsDisplay += `<i class="bi bi-star"></i>`;
-        };
-        reviewsArea.innerHTML += `
+
+async function loadReviews(productId) {
+  console.log("loadReviewsForProduct", productId);
+  const reviewsArea = document.querySelector("#accordion_product_" + productId + " .reviews");
+  if (reviewsArea.children.length === 0) {
+    console.log("Reviews not already loaded, retrieving reviews.");
+    const { data: fetchedReviews } = await axios.get(`../../api/product/reviews/${productId}`);
+    fetchedReviews.map(review => {
+      console.log("Review", review);
+
+      let ratingsDisplay = "";
+      let starNum = 0;
+      for (; starNum < review.rating; starNum++) {
+        ratingsDisplay += `<i class="bi bi-star-fill"></i>`;
+      };
+      for (; starNum < 5; starNum++) {
+        ratingsDisplay += `<i class="bi bi-star"></i>`;
+      };
+      reviewsArea.innerHTML += `
           <div href="#" class="list-group-item list-group-item-action">
             <div class="d-flex w-100 justify-content-between">
               <h5 class="mb-1">${review.customer.companyName}</h5>
@@ -224,9 +218,9 @@ document.addEventListener("DOMContentLoaded", function() {
             <small class="text-body-secondary">${review.reviewAt}</small>
           </a>
         `;
-      });
+    });
 
-    }else{
-      console.log("Reviews already exist");
-    }
+  } else {
+    console.log("Reviews already exist");
   }
+}
