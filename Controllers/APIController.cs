@@ -19,7 +19,7 @@ namespace Northwind.Controllers
 
         public Product Get(int id) => _dataContext.Products.FirstOrDefault(p => p.ProductId == id);
 
-   [HttpGet, Route("api/productWithRating/{id}")]
+        [HttpGet, Route("api/productWithRating/{id}")]
         // returns specific product
         // public Product GetProductWithRating(int id) => _dataContext.Products.Include("Category").FirstOrDefault(p => p.ProductId == id);
         // TODO: Not yet set up

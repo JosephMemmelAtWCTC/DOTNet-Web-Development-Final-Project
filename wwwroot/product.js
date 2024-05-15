@@ -76,6 +76,7 @@ async function fetchProducts() {
   fetchedProducts.map(product => {
     const css = product.discontinued ? " discontinued" : "";
     const ratingText = product.averageRating ? `${product.averageRating.toFixed(1)} stars` : "No ratings yet!";
+
     // TODO: Add paganation and wait for everything else to load before loading reviews
 
     product_row = 
