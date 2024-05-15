@@ -22,7 +22,7 @@ public class ProductController(DataContext db, UserManager<AppUser> usrMgr) : Co
   public IActionResult Discounts() => View(_dataContext.Discounts.Where(d => d.EndTime > DateTime.Today).OrderBy(d => d.EndTime));
 
 
-  public IActionResult Index(int id)
+   public IActionResult Index(int id)
     {
         ViewBag.id = id;
         var products = _dataContext.Products.Where(p => p.CategoryId == id && !p.Discontinued).ToList();

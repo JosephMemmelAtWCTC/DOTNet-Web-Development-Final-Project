@@ -19,31 +19,12 @@ namespace Northwind.Controllers
 
         public Product Get(int id) => _dataContext.Products.FirstOrDefault(p => p.ProductId == id);
 
-        [HttpGet, Route("api/productWithRating/{id}")]
-        public ActionResult<Product> GetProductWithRating(int id)
-        {
-            var product = _dataContext.Products
-                .Where(p => p.ProductId == id)
-                .Include(p => p.Category) // Ensure related data like categories is included if needed
-                .Select(p => new
-                {
-                    Product = p,
-                    Reviews = _dataContext.Reviews.Where(r => r.ProductId == p.ProductId).ToList() // Fetch reviews here
-                })
-                .FirstOrDefault();
- 
-            if (product == null)
-                return NotFound(); // Handle the case where the product does not exist
-
-            // Calculate the average rating if reviews are available
-            double? averageRating = product.Reviews.Any() ? product.Reviews.Average(r => r.Rating) : null;
-
-            // Map the result back to a Product instance, adding the average rating
-            Product result = product.Product;
-            result.AverageRating = averageRating.HasValue ? Math.Round(averageRating.Value, 1) : null;
-
-            return Ok(result); // Return the product along with its computed average rating
-        }
+   [HttpGet, Route("api/productWithRating/{id}")]
+        // returns specific product
+        // public Product GetProductWithRating(int id) => _dataContext.Products.Include("Category").FirstOrDefault(p => p.ProductId == id);
+        // TODO: Not yet set up
+        public Product GetProductWithRating(int id) => _dataContext.Products.Include("Reviews").FirstOrDefault(p => p.ProductId == id);
+        // public ActionResult Index() => View(_dataContext.Discounts.Include("Product").Where(d => d.StartTime <= DateTime.Now && d.EndTime > DateTime.Now).Take(3));
 
 
         [HttpGet, Route("api/product/discontinued/{discontinued}")]
