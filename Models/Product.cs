@@ -15,6 +15,8 @@ public class Product
     public Category Category { get; set; }
     [NotMapped]
     public double? AverageRating { get; set; }
+     [NotMapped]
+    public int ReviewCount { get; set; }
    
     
 }

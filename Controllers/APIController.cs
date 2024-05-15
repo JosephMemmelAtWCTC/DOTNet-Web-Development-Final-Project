@@ -19,12 +19,38 @@ namespace Northwind.Controllers
 
         public Product Get(int id) => _dataContext.Products.FirstOrDefault(p => p.ProductId == id);
 
-        [HttpGet, Route("api/productWithRating/{id}")]
-        // returns specific product
-        // public Product GetProductWithRating(int id) => _dataContext.Products.Include("Category").FirstOrDefault(p => p.ProductId == id);
-        // TODO: Not yet set up
-        public Product GetProductWithRating(int id) => _dataContext.Products.Include("Reviews").FirstOrDefault(p => p.ProductId == id);
-        // public ActionResult Index() => View(_dataContext.Discounts.Include("Product").Where(d => d.StartTime <= DateTime.Now && d.EndTime > DateTime.Now).Take(3));
+         [HttpGet, Route("api/productWithRating")]
+        // returns all products with average rating and review count
+        public IEnumerable<Product> GetProductsWithRating()
+        {
+            var products = _dataContext.Products.ToList();
+
+            var productRatings = _dataContext.Reviews
+                .GroupBy(r => r.ProductId)
+                .Select(g => new
+                {
+                    ProductId = g.Key,
+                    AverageRating = g.Average(r => r.Rating),
+                    ReviewCount = g.Count()
+                }).ToDictionary(x => x.ProductId, x => new { x.AverageRating, x.ReviewCount });
+
+            foreach (var product in products)
+            {
+                if (productRatings.ContainsKey(product.ProductId))
+                {
+                    product.AverageRating = Math.Round(productRatings[product.ProductId].AverageRating, 1);
+                    product.ReviewCount = productRatings[product.ProductId].ReviewCount;
+                }
+                else
+                {
+                    product.AverageRating = null;
+                    product.ReviewCount = 0;
+                }
+            }
+
+            return products;
+        }
+
 
 
         [HttpGet, Route("api/product/discontinued/{discontinued}")]
