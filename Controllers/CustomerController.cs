@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 public class CustomerController(DataContext db, UserManager<AppUser> usrMgr) : Controller
 {
@@ -75,7 +76,34 @@ public class CustomerController(DataContext db, UserManager<AppUser> usrMgr) : C
         // Edit customer info
       _dataContext.EditCustomer(customer);
       return RedirectToAction("Index", "Home");
-  }
+    }
+    
+
+    [Authorize(Roles = "northwind-customer")]
+    // public IActionResult Purchases() => View(_dataContext.Customers.Include("Customers").FirstOrDefault(c => c.Email == User.Identity.Name).Include(""));
+    // public IActionResult Purchases() => View(
+    //   _dataContext.OrderDetails.Where(od => od.Order.CustomerId == _dataContext.Customers.FirstOrDefault(c => c.Email == User.Identity.Name).CustomerId))
+    // ;
+    public IActionResult Purchases()
+    {
+        var customerWithOrdersAndOrderDetails = new CustomerOrdersAndOrderDetails
+        {
+            Customer = _dataContext.Customers.FirstOrDefault(c => c.Email == User.Identity.Name),
+            Orders = _dataContext.Orders
+                .Where(o => o.Customer.Email == User.Identity.Name)
+                .Include(o => o.OrderDetails)
+                .ThenInclude(od => od.Product)
+                .ToList(),
+            LeftReviews = _dataContext.Reviews.Where(r => r.Customer.Email == User.Identity.Name)
+        };
+
+        return View(customerWithOrdersAndOrderDetails);
+    }
+
+
+
+
+    [Authorize(Roles = "northwind-customer"), HttpPost, ValidateAntiForgeryToken]
     private void AddErrorsFromResult(IdentityResult result)
     {
       foreach (IdentityError error in result.Errors)

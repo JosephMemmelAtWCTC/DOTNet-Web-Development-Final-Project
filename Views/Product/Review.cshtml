@@ -13,6 +13,10 @@
 
     <div class="col-md-12">
         <p>Rating number input is here for debugging to see the saved value. It is still needed but will be hidden for the final </p>
+        <input asp-for="@Model.ProductId" type="number" min="0" step="1" class="form-control"/>
+        <input asp-for="@Model.CustomerId" type="number" class="form-control"/>
+
+
       <label asp-for="@Model.Rating" class="form-label">Rating</label>
       <input asp-for="@Model.Rating" id="rating-input" type="number" value="0" min="1" max="5" step="1" class="form-control" placeholder="Rating" id="inputRating"/>
       <span id="rating-stars-input">
