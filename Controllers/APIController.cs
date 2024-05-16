@@ -19,7 +19,7 @@ namespace Northwind.Controllers
 
         public Product Get(int id) => _dataContext.Products.FirstOrDefault(p => p.ProductId == id);
 
-         [HttpGet, Route("api/productWithRating")]
+             [HttpGet, Route("api/productWithRating")]
         // returns all products with average rating and review count
         public IEnumerable<Product> GetProductsWithRating()
         {
@@ -50,8 +50,6 @@ namespace Northwind.Controllers
 
             return products;
         }
-
-
 
         [HttpGet, Route("api/product/discontinued/{discontinued}")]
         // returns all products where discontinued = true/false
