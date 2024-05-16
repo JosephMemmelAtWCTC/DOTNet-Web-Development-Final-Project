@@ -57,24 +57,7 @@ public class ProductController(DataContext db, UserManager<AppUser> usrMgr) : Co
 
         _dataContext.AddReview(review);
       }
-      return View();
+      return RedirectToAction("Purchases", "Customer");
     }
 
-
-  //   [Authorize(Roles = "northwind-customer")]
-  //   public IActionResult Account() => View(_dataContext.Customers.FirstOrDefault(c => c.Email == User.Identity.Name));
-  //   [Authorize(Roles = "northwind-customer"), HttpPost, ValidateAntiForgeryToken]
-  //   public IActionResult Account(Customer customer)
-  //   {
-  //       // Edit customer info
-  //     _dataContext.EditCustomer(customer);
-  //     return RedirectToAction("Index", "Home");
-  // }
-  //   private void AddErrorsFromResult(IdentityResult result)
-  //   {
-  //     foreach (IdentityError error in result.Errors)
-  //     {
-  //       ModelState.AddModelError("", error.Description);
-  //     }
-  //   }
 }
