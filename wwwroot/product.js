@@ -68,15 +68,13 @@ document.addEventListener("DOMContentLoaded", function() {
   async function fetchProducts() {
     const id = document.getElementById('product_rows').dataset['id'];
     const discontinued = document.getElementById('Discontinued').checked ? "" : "/discontinued/false";
-    const { data: fetchedProducts } = await axios.get(`../../api/category/${id}/product${discontinued}`);
+    const { data: fetchedProducts } = await axios.get(`../../api/category/${id}/productWithAverageReview${discontinued}`);
     // console.log(fetchedProducts);
     let product_row = "";
     // console.log("fetchedProducts", fetchedProducts);
     document.getElementById('product_rows').innerHTML = "";
     fetchedProducts.map(product => {
       const css = product.discontinued ? " discontinued" : "";
-
-      // TODO: Add paganation and wait for everything else to load before loading reviews
 
       product_row = 
         `
@@ -97,7 +95,7 @@ document.addEventListener("DOMContentLoaded", function() {
                       <td class="test-start col-6">${product.productName}</td>
                       <td class="text-end col">${product.unitPrice.toFixed(2)}</td>
                       <td class="text-end col">${product.unitsInStock}</td>
-                      <td class="text-end col">${product.rating}</td>
+                      <td class="text-end col">${product.averageRating === -1? 'No Ratings Yet':product.averageRating}</td>
                       <td class="text-end col">
                         <button class="add-to-cart" onclick="addToCartPullUpModal('${product.productId}','${product.productName}','${product.unitPrice}','${product.unitsInStock}','${product.rating}')">
                           <i class="bi bi-cart-plus"></i>
@@ -202,9 +200,15 @@ document.addEventListener("DOMContentLoaded", function() {
     const reviewsArea = document.querySelector("#accordion_product_"+productId+" .reviews");
     if(reviewsArea.children.length === 0){
       console.log("Reviews not already loaded, retrieving reviews.");
+      let reviewsSum = 0;
+      let reviewsNum = 0.0;
+      
       const { data: fetchedReviews } = await axios.get(`../../api/product/reviews/${productId}`);
       fetchedReviews.map(review => {
         console.log("Review", review);
+        reviewsNum += 1;
+        reviewsSum += review.rating;
+        console.log("Review2", reviewsNum, reviewsSum);
 
         let ratingsDisplay = "";
         let starNum = 0;
@@ -224,7 +228,9 @@ document.addEventListener("DOMContentLoaded", function() {
             <small class="text-body-secondary">${review.reviewAt}</small>
           </a>
         `;
+        console.log("averageRating: "+(reviewsSum/reviewsNum));
       });
+
 
     }else{
       console.log("Reviews already exist");
