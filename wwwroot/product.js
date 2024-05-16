@@ -242,7 +242,7 @@ async function loadReviews(productId){
             <h5 class="mb-1">${review.customer.companyName}</h5>
             <small class="text-body-secondary">${ratingsDisplay}</small>
           </div>
-          <p class="mb-1 ms-3">${review.comment}.</p>
+          <p class="mb-1 ms-3">${review.comment}</p>
           <small class="text-body-secondary">${review.reviewAt}</small>
         </a>
       `;
