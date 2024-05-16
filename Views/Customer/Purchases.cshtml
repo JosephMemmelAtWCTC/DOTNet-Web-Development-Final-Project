@@ -36,85 +36,85 @@
     decimal orderTotal = 0m;
 
 
-    <div class="card">
-    <div class="card-header">
-        <div class="row">
-            <div class="col-3">
-                <span>Ordered on @o.OrderDate</span>
+    <div class="card mb-3">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-12">
+                    <span>Ordered on @o.OrderDate.ToString("d/M/yyyy") at @o.OrderDate.ToString("h:mm tt")</span>
+                </div>
             </div>
-            <div class="col-3">
+        </div>
+
+        @* <div class="card-body">
+        </div> *@
+        <ul class="list-group list-group-flush">
+            <table class="table bg-secondary">
+                <thead>
+                    <tr>
+                        <th scope="col"><!--Product--></th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (OrderDetails od in o.OrderDetails)
+                    {
+                        @* Row Variables *@
+
+                        var productSubtotal = (od.Quantity * od.Product.UnitPrice);
+                        orderTotal += productSubtotal;
+
+                        <tr>
+                            <th scope="row">
+                                <a target="_blank" class="nav-link d-flex" asp-controller="Product" asp-action="Index" asp-route-id="@od.Product.CategoryId" class="list-group-item list-group-item-action">@od.Product.ProductName</a>
+                            </th>
+                            <td>x @od.Quantity</td>
+                            @* <td>$ @((od.Quantity * od.Product.UnitPrice))</td> *@
+                            <td>$
+                                @productSubtotal.ToString("0.00") @* https://learn.microsoft.com/en-us/dotnet/standard/base-types/custom-numeric-format-strings *@
+                            </td>
+                            <td>
+                                @if (@o.ShippedDate.HasValue)
+                                {
+                                    @* Check for customer id is redundent :) Any(r => r.CustomerId == @Model.Customer.CustomerId) *@
+                                    @if (@Model.LeftReviews.Any(r => r.ProductId == od.ProductId))
+                                    {
+                                        <a target="_blank" class="nav-link d-flex" asp-controller="Product" asp-action="Index" asp-route-id="@od.Product.CategoryId" class="list-group-item list-group-item-action">Already Left Review</a>
+
+                                    }else{
+                                        <a class="nav-link d-flex" asp-controller="Product" asp-action="Review" asp-route-id="@od.Product.ProductId" target="_blank">Leave Review<i class="bi bi-pen"></i></a>
+                                    }
+                                }else{
+                                    <span></span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th scope="col" class="col-5"></th>
+                        <th scope="col">Total</th>
+                        <th scope="col">$ @orderTotal.ToString("#,0.00")</th>
+                        <th scope="col"></th>
+                    </tr>
+                </tfoot>
+            </table>
+        </ul>
+        <div class="card-footer">
+            <div class="col-12">
                 @if (@o.ShippedDate.HasValue)
                 {
-                    <span>Shipped on @o.ShippedDate</span>
+                    @* https://stackoverflow.com/a/1833060 for ToString() with nullable *@
+                    <span>Shipped on @o.ShippedDate.Value.ToString("d/M/yyyy") at @o.ShippedDate.Value.ToString("h:mm tt")</span>
                 }else{
                     <span>Not yet shipped</span>
                 }
             </div>
         </div>
     </div>
-
-    @* <div class="card-body">
-    </div> *@
-    <ul class="list-group list-group-flush">
-        <table class="table bg-secondary">
-            <thead>
-                <tr>
-                    <th scope="col"><!--Product--></th>
-                    <th scope="col">Quantity</th>
-                    <th scope="col">Total</th>
-                    <th scope="col"></th>
-                </tr>
-            </thead>
-            <tbody>
-
-                @foreach (OrderDetails od in o.OrderDetails)
-                {
-                    @* Row Variables *@
-
-                    var productSubtotal = (od.Quantity * od.Product.UnitPrice);
-                    orderTotal += productSubtotal;
-
-                    <tr>
-                        <th scope="row">
-                            <a target="_blank" class="nav-link d-flex" asp-controller="Product" asp-action="Index" asp-route-id="@od.Product.CategoryId" class="list-group-item list-group-item-action">@od.Product.ProductName</a>
-                        </th>
-                        <td>x @od.Quantity</td>
-                        @* <td>$ @((od.Quantity * od.Product.UnitPrice))</td> *@
-                        <td>$
-                            @productSubtotal.ToString("0.00") @* https://learn.microsoft.com/en-us/dotnet/standard/base-types/custom-numeric-format-strings *@
-                        </td>
-                        <td>
-                            @if (@o.ShippedDate.HasValue)
-                            {
-                                @* Check for customer id is redundent :) Any(r => r.CustomerId == @Model.Customer.CustomerId) *@
-                                @if (@Model.LeftReviews.Any(r => r.ProductId == od.ProductId))
-                                {
-                                    <a target="_blank" class="nav-link d-flex" asp-controller="Product" asp-action="Index" asp-route-id="@od.Product.CategoryId" class="list-group-item list-group-item-action">Already Left Review</a>
-
-                                }else{
-                                    <a class="nav-link d-flex" asp-controller="Product" asp-action="Review" asp-route-id="@od.Product.ProductId" target="_blank">Leave Review<i class="bi bi-pen"></i></a>
-                                }
-                            }else{
-                                <span></span>
-                            }
-                        </td>
-                    </tr>
-                }
-            </tbody>
-            <tfoot>
-                <tr>
-                    <th scope="col" class="col-5"></th>
-                    <th scope="col">Total</th>
-                    <th scope="col">$ @orderTotal.ToString("#,0.00")</th>
-                    <th scope="col"></th>
-                </tr>
-            </tfoot>
-        </table>
-    </ul>
-    <div class="card-footer">
-        Footer
-    </div>
-</div>
 }
 </div>
         @* <h4>@o.OrderDate</h4> *@
