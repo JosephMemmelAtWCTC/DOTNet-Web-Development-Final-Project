@@ -19,37 +19,26 @@ namespace Northwind.Controllers
 
         public Product Get(int id) => _dataContext.Products.FirstOrDefault(p => p.ProductId == id);
 
-             [HttpGet, Route("api/productWithRating")]
-        // returns all products with average rating and review count
-        public IEnumerable<Product> GetProductsWithRating()
-        {
-            var products = _dataContext.Products.ToList();
+        [HttpGet, Route("api/productWithRating/{id}")]
+        public ProductWithAverageRating GetProductWithRating(int id){
+            Product product = _dataContext.Products.FirstOrDefault(p => p.ProductId == id);
+            double averageRating = _dataContext.Reviews.Where(r => r.ProductId == id).Average(r => r.Rating);
 
-            var productRatings = _dataContext.Reviews
-                .GroupBy(r => r.ProductId)
-                .Select(g => new
-                {
-                    ProductId = g.Key,
-                    AverageRating = g.Average(r => r.Rating),
-                    ReviewCount = g.Count()
-                }).ToDictionary(x => x.ProductId, x => new { x.AverageRating, x.ReviewCount });
-
-            foreach (var product in products)
-            {
-                if (productRatings.ContainsKey(product.ProductId))
-                {
-                    product.AverageRating = Math.Round(productRatings[product.ProductId].AverageRating, 1);
-                    product.ReviewCount = productRatings[product.ProductId].ReviewCount;
-                }
-                else
-                {
-                    product.AverageRating = null;
-                    product.ReviewCount = 0;
-                }
-            }
-
-            return products;
+            return new ProductWithAverageRating{
+                ProductId = product.ProductId,
+                ProductName = product.ProductName,
+                QuantityPerUnit = product.QuantityPerUnit,
+                UnitPrice = product.UnitPrice,
+                UnitsInStock = product.UnitsInStock,
+                UnitsOnOrder = product.UnitsOnOrder,
+                ReorderLevel = product.ReorderLevel,
+                Discontinued = product.Discontinued,
+                CategoryId = product.CategoryId,
+                Category = product.Category,
+                AverageRating = averageRating,
+            };
         }
+
 
         [HttpGet, Route("api/product/discontinued/{discontinued}")]
         // returns all products where discontinued = true/false
@@ -63,6 +52,28 @@ namespace Northwind.Controllers
         // returns all products in a specific category where discontinued = true/false
         public IEnumerable<Product> GetByCategoryDiscontinued(int CategoryId, bool discontinued) => _dataContext.Products.Where(p => p.CategoryId == CategoryId && p.Discontinued == discontinued).OrderBy(p => p.ProductName);
 
+
+        [HttpGet, Route("api/category/{CategoryId}/productWithAverageReview/discontinued/{discontinued}")]
+        public IEnumerable<ProductWithAverageRating> GetByCategoryProductWithRating(int CategoryId, bool discontinued){
+            return _dataContext.Products.Where(p => p.CategoryId == CategoryId && p.Discontinued == discontinued).OrderBy(p => p.ProductName)//.Where(p=> p.ProductId == 1)
+            // https://learn.microsoft.com/en-us/dotnet/api/system.linq.enumerable.select?view=net-8.0
+                .Select(productWithoutRatingForPassthrough => new ProductWithAverageRating{
+                    ProductId = productWithoutRatingForPassthrough.ProductId,
+                    ProductName = productWithoutRatingForPassthrough.ProductName,
+                    QuantityPerUnit = productWithoutRatingForPassthrough.QuantityPerUnit,
+                    UnitPrice = productWithoutRatingForPassthrough.UnitPrice,
+                    UnitsInStock = productWithoutRatingForPassthrough.UnitsInStock,
+                    UnitsOnOrder = productWithoutRatingForPassthrough.UnitsOnOrder,
+                    ReorderLevel = productWithoutRatingForPassthrough.ReorderLevel,
+                    Discontinued = productWithoutRatingForPassthrough.Discontinued,
+                    CategoryId = productWithoutRatingForPassthrough.CategoryId,
+                    Category = productWithoutRatingForPassthrough.Category,
+
+                    AverageRating = _dataContext.Reviews.Where(r => r.ProductId == productWithoutRatingForPassthrough.ProductId).Any() ? _dataContext.Reviews.Where(r => r.ProductId == productWithoutRatingForPassthrough.ProductId).Average(r => r.Rating) : -1,
+                });
+                // Can't use new {} when returning direct new ProductWithAverageRating(){} as "CS0834 - A lambda expression with a statement body cannot be converted to an expression tree."
+        }
+
         [HttpGet, Route("api/category")]
         // returns all categories
         public IEnumerable<Category> GetCategory() => _dataContext.Categories.Include("Products").OrderBy(c => c.CategoryName);
@@ -75,6 +86,7 @@ namespace Northwind.Controllers
         // Get all reviews related to the product
         [HttpGet, Route("api/product/reviews/{ProductId}")]
         public IEnumerable<Review> GetReviewsByProduct(int ProductId) => _dataContext.Reviews.Include(r => r.Product).Include(r => r.Customer).Where(r => r.ProductId == ProductId);
-        //  _dataContext.Products.FirstOrDefault(p => p.ProductId == id);
+        [HttpGet, Route("api/product/averageReview/{ProductId}")]
+        public Double GetAverageReviewByProduct(int ProductId) => _dataContext.Reviews.Where(r => r.ProductId == ProductId).Average(r => r.Rating);
     }
 }

@@ -100,3 +100,42 @@ button.accept-policy {
     color: var(--sand);
 }
 
+/* Toast notifications */
+.toast {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    min-width: 200px;
+    max-width: 300px;
+    padding: 1rem;
+    color: var(--white);
+    background-color: var(--black);
+    border: 1px solid var(--red);
+    border-radius: 0.25rem;
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1050;
+    opacity: 0.9;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.toast-header {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.toast-body {
+    flex-grow: 1;
+    padding-left: 0.5rem;
+}
+
+.toast-close {
+    background-color: transparent;
+    border: none;
+    color: var(--white);
+    cursor: pointer;
+    font-size: 1.2rem;
+    line-height: 1;
+}

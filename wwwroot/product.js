@@ -68,16 +68,14 @@ const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 async function fetchProducts() {
   const id = document.getElementById('product_rows').dataset['id'];
   const discontinued = document.getElementById('Discontinued').checked ? "" : "/discontinued/false";
-  const { data: fetchedProducts } = await axios.get(`../../api/category/${id}/product${discontinued}`);
+  const { data: fetchedProducts } = await axios.get(`../../api/category/${id}/productWithAverageReview${discontinued}`);
   // console.log(fetchedProducts);
   let product_row = "";
   // console.log("fetchedProducts", fetchedProducts);
   document.getElementById('product_rows').innerHTML = "";
   fetchedProducts.map(product => {
     const css = product.discontinued ? " discontinued" : "";
-    const ratingText = product.averageRating ? `${product.averageRating.toFixed(1)} stars` : "No ratings yet!";
-    const reviewCountText = product.reviewCount ? product.reviewCount : "0";
-    // TODO: Add paganation and wait for everything else to load before loading reviews
+    const starRating = getStarRating(product.averageRating);
 
     product_row = 
       `
@@ -98,7 +96,7 @@ async function fetchProducts() {
                     <td class="test-start col-6">${product.productName}</td>
                     <td class="text-end col">${product.unitPrice.toFixed(2)}</td>
                     <td class="text-end col">${product.unitsInStock}</td>
-                    <td class="text-end col">${ratingText}</td>
+                    <td class="text-end col">${starRating}</td>
                     <td class="text-end col">
                       <button class="add-to-cart" onclick="addToCartPullUpModal('${product.productId}','${product.productName}','${product.unitPrice}','${product.unitsInStock}','${product.rating}')">
                         <i class="bi bi-cart-plus"></i>
@@ -160,6 +158,21 @@ async function fetchProducts() {
     });
   });
 }
+function getStarRating(averageRating) {
+  if (averageRating === -1) {
+    return 'No Ratings Yet';
+  }
+  
+  let starRating = '';
+  for (let i = 1; i <= 5; i++) {
+    if (i <= averageRating) {
+      starRating += `<i class="bi bi-star-fill"></i>`;
+    } else {
+      starRating += `<i class="bi bi-star"></i>`;
+    }
+  }
+  return starRating;
+}
 document.getElementById('addToCart').addEventListener("click", (e) => {
 
   // hide modal
@@ -203,9 +216,15 @@ async function loadReviews(productId){
   const reviewsArea = document.querySelector("#accordion_product_"+productId+" .reviews");
   if(reviewsArea.children.length === 0){
     console.log("Reviews not already loaded, retrieving reviews.");
+    let reviewsSum = 0;
+    let reviewsNum = 0.0;
+    
     const { data: fetchedReviews } = await axios.get(`../../api/product/reviews/${productId}`);
     fetchedReviews.map(review => {
       console.log("Review", review);
+      reviewsNum += 1;
+      reviewsSum += review.rating;
+      console.log("Review2", reviewsNum, reviewsSum);
 
       let ratingsDisplay = "";
       let starNum = 0;
@@ -225,7 +244,9 @@ async function loadReviews(productId){
           <small class="text-body-secondary">${review.reviewAt}</small>
         </a>
       `;
+      console.log("averageRating: "+(reviewsSum/reviewsNum));
     });
+
 
   }else{
     console.log("Reviews already exist");
