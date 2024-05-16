@@ -96,7 +96,7 @@ async function fetchProducts() {
                     <td class="test-start col-6">${product.productName}</td>
                     <td class="text-end col">${product.unitPrice.toFixed(2)}</td>
                     <td class="text-end col">${product.unitsInStock}</td>
-                    <td class="text-end col" title="${product.averageRating}">${starRating}</td>
+                    <td class="text-end col" title="Avg. Rating ${product.averageRating}">${starRating}</td>
                     <td class="text-end col">
                       <button class="add-to-cart" onclick="addToCartPullUpModal('${product.productId}','${product.productName}','${product.unitPrice}','${product.unitsInStock}','${product.rating}')">
                         <i class="bi bi-cart-plus"></i>
