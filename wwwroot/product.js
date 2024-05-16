@@ -162,11 +162,13 @@ function getStarRating(averageRating) {
   if (averageRating === -1) {
     return 'No Ratings Yet';
   }
-  
+
   let starRating = '';
   for (let i = 1; i <= 5; i++) {
-    if (i <= averageRating) {
+    if (averageRating >= i) {
       starRating += `<i class="bi bi-star-fill"></i>`;
+    } else if (averageRating >= i - 0.5) {
+      starRating += `<i class="bi bi-star-half"></i>`;
     } else {
       starRating += `<i class="bi bi-star"></i>`;
     }
