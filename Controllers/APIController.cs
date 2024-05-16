@@ -69,7 +69,7 @@ namespace Northwind.Controllers
                     CategoryId = productWithoutRatingForPassthrough.CategoryId,
                     Category = productWithoutRatingForPassthrough.Category,
 
-                    AverageRating = _dataContext.Reviews.Where(r => r.ProductId == productWithoutRatingForPassthrough.ProductId).Any() ? _dataContext.Reviews.Where(r => r.ProductId == 1).Average(r => r.Rating) : -1,
+                    AverageRating = _dataContext.Reviews.Where(r => r.ProductId == productWithoutRatingForPassthrough.ProductId).Any() ? _dataContext.Reviews.Where(r => r.ProductId == productWithoutRatingForPassthrough.ProductId).Average(r => r.Rating) : -1,
                 });
                 // Can't use new {} when returning direct new ProductWithAverageRating(){} as "CS0834 - A lambda expression with a statement body cannot be converted to an expression tree."
         }
