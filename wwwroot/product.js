@@ -96,7 +96,7 @@ async function fetchProducts() {
                     <td class="test-start col-6">${product.productName}</td>
                     <td class="text-end col">${product.unitPrice.toFixed(2)}</td>
                     <td class="text-end col">${product.unitsInStock}</td>
-                    <td class="text-end col">${starRating}</td>
+                    <td class="text-end col" title="${product.averageRating}">${starRating}</td>
                     <td class="text-end col">
                       <button class="add-to-cart" onclick="addToCartPullUpModal('${product.productId}','${product.productName}','${product.unitPrice}','${product.unitsInStock}','${product.rating}')">
                         <i class="bi bi-cart-plus"></i>
@@ -164,11 +164,13 @@ function getStarRating(averageRating) {
   }
 
   let starRating = '';
+  console.log('Avg =', averageRating);
+  averageRating = Math.round(averageRating*2) / 2;
   for (let i = 1; i <= 5; i++) {
-    if (averageRating >= i) {
-      starRating += `<i class="bi bi-star-fill"></i>`;
-    } else if (averageRating >= i - 0.5) {
+    if (averageRating > i && averageRating < i+1) {
       starRating += `<i class="bi bi-star-half"></i>`;
+    } else if (averageRating >= i) {
+      starRating += `<i class="bi bi-star-fill"></i>`;
     } else {
       starRating += `<i class="bi bi-star"></i>`;
     }
